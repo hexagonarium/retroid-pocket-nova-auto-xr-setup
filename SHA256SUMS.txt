@@ -1,0 +1,5 @@
+2eb47bdd8fba54e26f3131363a957cbe8d9525fda83f53c9c039ddd636e7bfa0  README.md
+be4a08bd8fb09fda987396157a9bffbb44f334e08bddb5f97395e22e87b4b773  Retroid Pocket Nova Auto XR setup.prj.xml
+47793ced15664668be3d27720da36f91187cc480d74b377763ddd263749005e2  scripts/nova-xr-ratio.sh
+c2b36fd71dce21766b94b46dd3f04d868df5efd72b99b559ece5981c01ebc31b  scripts/nova-xr-wake.sh
+1e84c16124b63c3501bafc6605a673890f5312194cdda91f7d10527f95bcea17  TASKER SETUP.txt

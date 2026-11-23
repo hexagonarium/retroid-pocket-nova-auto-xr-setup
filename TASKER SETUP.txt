@@ -1,0 +1,127 @@
+Retroid Pocket Nova Auto XR setup - Tasker tutorial
+
+YOU NEED
+
+A rooted Nova, Tasker (tested with 6.7.9), and working USB-C video output to
+your glasses. Use a PC with Google's ADB platform-tools for the copy steps:
+https://developer.android.com/tools/releases/platform-tools
+
+1. PREPARE THE NOVA
+
+- Back up your current Tasker configuration: Menu > Data > Backup.
+- Note any existing custom resolution override or touch-marker preference.
+- Disable older profiles that already change resolution on HDMI connection.
+  Import this project once; duplicate profiles can fight each other.
+- In Retroid settings, enable the option that turns off the built-in screen
+  when outputting video. Exact menu wording can vary with firmware.
+- Allow Tasker to run in the background and allow its notifications.
+- Enable USB debugging, connect the Nova to the PC, and approve the PC's
+  debugging prompt. Keep the glasses unplugged during installation.
+
+2. COPY THE FILES
+
+Extract the ZIP on your PC. Open a terminal INSIDE the extracted folder.
+Run these commands; adb must be available in that terminal:
+
+adb devices
+adb push scripts/nova-xr-ratio.sh /data/local/tmp/nova-xr-ratio.sh
+adb push scripts/nova-xr-wake.sh /data/local/tmp/nova-xr-wake.sh
+adb shell su -c "chmod 700 /data/local/tmp/nova-xr-ratio.sh /data/local/tmp/nova-xr-wake.sh"
+adb push "Retroid Pocket Nova Auto XR setup.prj.xml" /sdcard/Download/
+
+Approve a root request for the ADB shell if your root manager asks.
+These commands copy files; they do not enable ADB over Wi-Fi.
+Use the supplied .sh files as-is: Android needs LF line endings, not CRLF.
+
+3. IMPORT INTO TASKER
+
+- Open Tasker. Long-press a project tab or the Home icon along the bottom.
+- Choose Import Project, then select the .prj.xml file in Downloads.
+  If the project tabs are hidden, expand the bottom project area first.
+- Review the three profiles and three tasks, then enable the profiles and
+  use the check mark / Save & Apply. Labels vary slightly between versions.
+- Every Run Shell action must have Use Root checked. Grant Tasker root
+  access in your root manager when requested.
+- To trigger the first root prompt safely, run Switch Ratio once from the
+  Tasks tab while the glasses are unplugged. It restores native size there.
+
+Import the PROJECT file; do not use Data > Restore, which is for a full backup.
+
+4. TEST IT
+
+- Disconnect the PC and plug in the glasses: expect a landscape 16:9 image,
+  a blank Nova screen, and finger markers visible in the glasses.
+- Press power to sleep, then wake: after roughly 1-2 seconds, the Nova screen
+  should blank again while touch remains accurate in the glasses.
+- Unplug the glasses and wait about three seconds: expect native 4:3 and no
+  touch markers. Wake normally without glasses: the new wake task does nothing.
+
+Android may still ask to let DroidDeck access the glasses' USB electronics.
+This package does not suppress or automatically approve that separate prompt.
+
+MANUAL TASKER SETUP (IF YOU PREFER NOT TO IMPORT)
+
+Install both scripts using step 2, then create these tasks. For each Run Shell
+action, enable Use Root and set Timeout to 0 (no timeout):
+
+Task: Switch Ratio
+  Run Shell: sh /data/local/tmp/nova-xr-ratio.sh
+
+Task: Revert Ratio
+  Wait: 2 seconds
+  Run Shell: sh /data/local/tmp/nova-xr-ratio.sh
+
+Task: XR Wake Reblank
+  Run Shell: sh /data/local/tmp/nova-xr-wake.sh
+
+Create and enable these profiles:
+
+Switch 16:9
+  State > Hardware > HDMI Plugged
+  Enter task: Switch Ratio
+
+Revert 4:3
+  State > Hardware > HDMI Plugged, with Invert enabled
+  Enter task: Revert Ratio
+
+XR Screen Wake
+  Event > Display > Display On
+  Task: XR Wake Reblank
+
+Both ratio tasks intentionally call the same script: physical DP status decides
+whether it applies 16:9 or restores native size. Do not add an unconditional
+"wm size reset" or "show_touches 0" action on an HDMI-disconnected event.
+
+The Nova's native panel is portrait in Android's hardware coordinates.
+"wm size 1080x1920" becomes 1920x1080 in its usual landscape orientation.
+"wm size reset" removes that override and restores the Nova's native 4:3.
+
+IF SOMETHING DOES NOT WORK
+
+- Check that both scripts exist at the exact /data/local/tmp paths above and
+  that Tasker has root access. Importing XML alone does not install the scripts.
+- Check the Retroid video-output screen-off option and Tasker background access.
+- Wake behavior can be isolated by disabling only XR Screen Wake; the other
+  two profiles continue handling resolution and touch markers.
+- The wake task logs successful runs to /data/local/tmp/nova-xr-wake.log.
+  Ratio changes are logged to /data/local/tmp/nova-xr-ratio.log.
+- Optional checks from an authorized ADB connection:
+  adb shell wm size
+  adb shell settings get system show_touches
+  adb shell su -c "cat /data/local/tmp/nova-xr-wake.log"
+
+DISABLE / REMOVE
+
+1. Disable all three imported profiles in Tasker.
+2. Unplug the glasses and wait at least three seconds so the watcher exits.
+3. Native resolution and touch markers should return to 4:3 / off. If needed:
+
+   adb shell su -c "wm size reset"
+   adb shell su -c "settings put system show_touches 0"
+
+4. Delete the imported Tasker project if you no longer want it. Optionally
+   delete the two .sh files and their .log/.lock files with a root file manager.
+   The new wake task leaves Retroid's video-output screen-off preference enabled;
+   you can turn that option off in Retroid settings if you no longer want it.
+
+Installation and removal do not change the APK or settings of DroidDeck.
