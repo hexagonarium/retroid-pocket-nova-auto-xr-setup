@@ -1,0 +1,21 @@
+<TaskerData sr="" dvi="1" tv="6.7.9"><Profile sr="prof501" ve="2"><id>501</id><Event sr="con0" ve="2"><pri>0</pri><Bundle sr="arg0"><Vals sr="val"><net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type><net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%app_icon
+Icon
+Icon for the app&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%app_name
+Name
+Name of the App&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%app_package
+Package
+Unique package name for the app&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES></Vals></Bundle><Str sr="arg1" ve="3" /><code>2078</code></Event><mid0>502</mid0><cdate>1795507380775</cdate><edate>1795507710371</edate><flags>8</flags><nme>Tasker Hide Recents</nme></Profile><Project sr="proj0" ve="2"><id>c0f091f8-b60d-473d-8aa2-996daf11279b</id><name>Tasker Background Helper</name><pids>501</pids><tids>502,503</tids><cdate>1795507380775</cdate><mdate>1795507380775</mdate></Project><Task sr="task502"><id>502</id><nme>Hide Tasker Recents</nme><Action sr="act0" ve="7"><Str sr="arg0" ve="3">// Paste into a Tasker Java Code action (not a standalone Java class).
+am = context.getSystemService(android.content.Context.ACTIVITY_SERVICE);
+tasks = am.getAppTasks();
+for (int i = 0; i &lt; tasks.size(); i++) {
+    tasks.get(i).setExcludeFromRecents(true);
+}
+return tasks.size();
+</Str><Str sr="arg1" ve="3" /><Int sr="arg2" val="1" /><code>474</code></Action><cdate>1795507090831</cdate><edate>1795507213653</edate></Task><Task sr="task503"><id>503</id><nme>Show Tasker Recents</nme><Action sr="act0" ve="7"><Str sr="arg0" ve="3">// Disable the Tasker Hide Recents profile before running this action.
+am = context.getSystemService(android.content.Context.ACTIVITY_SERVICE);
+tasks = am.getAppTasks();
+for (int i = 0; i &lt; tasks.size(); i++) {
+    tasks.get(i).setExcludeFromRecents(false);
+}
+return tasks.size();
+</Str><Str sr="arg1" ve="3" /><Int sr="arg2" val="1" /><code>474</code></Action><cdate>1795507090831</cdate><edate>1795507213653</edate></Task></TaskerData>
